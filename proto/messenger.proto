@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package messenger;
+import "google/protobuf/timestamp.proto";
+
+option go_package = "./";
+
+// TODO: - logout
+//       - server messages and events (users log in/out, shutdown, etc)
+
+service Messenger {
+    rpc Login(LoginRequest) returns (LoginResponse) {}
+    rpc Logout(LogoutRequest) returns (LogoutResponse) {}
+    rpc MessageStream(stream MSRequest) returns (stream MSResponse) {}
+}
+
+message LoginRequest {
+    string password = 1;
+    string username = 2;
+}
+
+message LogoutRequest {
+    string username = 2;
+}
+
+message LogoutResponse {
+}
+
+message LoginResponse {
+    string token = 1;
+}
+
+message MSRequest {
+    string message = 1;
+    uint32 expire = 2; // since moment when message sent
+}
+
+message MSResponse {
+    message Message {
+        string name    = 1;
+        string content = 2;
+        uint32 expire = 3;
+    }
+
+    google.protobuf.Timestamp timestamp = 3;
+    Message message = 4;
+}
